@@ -1,6 +1,6 @@
 import 'package:currency_converter/model/currency.dart';
 import 'package:flutter/material.dart';
-import '../data/currency_data.dart';
+import '../../../data/currency_data.dart';
 
 class CurrencyPickerModal extends StatefulWidget {
   final Currency selectedCurrency;

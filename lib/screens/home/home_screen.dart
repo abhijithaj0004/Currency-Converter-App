@@ -652,7 +652,6 @@
 //   }
 // }
 
-
 // lib/screens/home_screen.dart
 import 'package:currency_converter/bloc/app_bloc.dart';
 import 'package:currency_converter/bloc/app_event.dart';
@@ -660,8 +659,12 @@ import 'package:currency_converter/bloc/currencyconverter/currency_converter_blo
 import 'package:currency_converter/bloc/currencyconverter/currency_converter_event.dart';
 import 'package:currency_converter/bloc/currencyconverter/currency_converter_state.dart';
 import 'package:currency_converter/data/currency_data.dart';
+import 'package:currency_converter/model/currency.dart';
+import 'package:currency_converter/screens/home/widgets/animated_counter.dart';
+import 'package:currency_converter/screens/home/widgets/bouncer_wrapper.dart';
+import 'package:currency_converter/screens/home/widgets/currency_chip.dart';
 import 'package:currency_converter/user.dart';
-import 'package:currency_converter/widgets/currency_picker_model.dart';
+import 'package:currency_converter/screens/home/widgets/currency_picker_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -835,21 +838,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: BlocBuilder<CurrencyConversionBloc, CurrencyConversionState>(
           builder: (context, state) {
             return FloatingActionButton.extended(
-              onPressed: state.result != null ? () {
-                // Add conversion to favorites or history
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Saved: ${state.amount} ${state.fromCurrency} = ${state.result!.convertedAmount.toStringAsFixed(2)} ${state.toCurrency}',
-                    ),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              } : null,
+              onPressed: state.result != null
+                  ? () {
+                      // Add conversion to favorites or history
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Saved: ${state.amount} ${state.fromCurrency} = ${state.result!.convertedAmount.toStringAsFixed(2)} ${state.toCurrency}',
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  : null,
               icon: const Icon(Icons.favorite),
               label: const Text('Save'),
-              backgroundColor: state.result != null 
-                  ? null 
+              backgroundColor: state.result != null
+                  ? null
                   : Theme.of(context).colorScheme.outline.withOpacity(0.3),
             );
           },
@@ -910,7 +915,8 @@ class _WelcomeCard extends StatelessWidget {
                       Text(
                         'Welcome back!',
                         style: theme.textTheme.titleMedium?.copyWith(
-                          color: theme.colorScheme.onPrimary,fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.onPrimary,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
@@ -965,17 +971,17 @@ class _CurrencyConverterCardState extends State<_CurrencyConverterCard>
   @override
   void initState() {
     super.initState();
-    
+
     _swapController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    
+
     _resultController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _swapAnimation = Tween<double>(
       begin: 0,
       end: 1,
@@ -1001,7 +1007,8 @@ class _CurrencyConverterCardState extends State<_CurrencyConverterCard>
     ));
 
     final state = context.read<CurrencyConversionBloc>().state;
-    _amountController = TextEditingController(text: state.amount.toStringAsFixed(2));
+    _amountController =
+        TextEditingController(text: state.amount.toStringAsFixed(2));
   }
 
   @override
@@ -1033,10 +1040,12 @@ class _CurrencyConverterCardState extends State<_CurrencyConverterCard>
         selectedCurrency: selectedCurrency,
         onCurrencySelected: (currency) {
           if (isFromCurrency) {
-            context.read<CurrencyConversionBloc>()
+            context
+                .read<CurrencyConversionBloc>()
                 .add(UpdateFromCurrencyEvent(currency.code));
           } else {
-            context.read<CurrencyConversionBloc>()
+            context
+                .read<CurrencyConversionBloc>()
                 .add(UpdateToCurrencyEvent(currency.code));
           }
         },
@@ -1051,7 +1060,8 @@ class _CurrencyConverterCardState extends State<_CurrencyConverterCard>
       HapticFeedback.lightImpact();
     } else {
       setState(() => _hasInvalidInput = false);
-      context.read<CurrencyConversionBloc>()
+      context
+          .read<CurrencyConversionBloc>()
           .add(UpdateAmountEvent(parsedValue));
     }
   }
@@ -1098,9 +1108,11 @@ class _CurrencyConverterCardState extends State<_CurrencyConverterCard>
                   // From Currency Section
                   _buildCurrencySection(
                     label: 'From',
-                    currency: CurrencyData.getCurrencyByCode(state.fromCurrency),
+                    currency:
+                        CurrencyData.getCurrencyByCode(state.fromCurrency),
                     isInput: true,
-                    onCurrencyTap: () => _showCurrencyPicker(isFromCurrency: true),
+                    onCurrencyTap: () =>
+                        _showCurrencyPicker(isFromCurrency: true),
                     state: state,
                   ),
 
@@ -1134,7 +1146,8 @@ class _CurrencyConverterCardState extends State<_CurrencyConverterCard>
                     label: 'To',
                     currency: CurrencyData.getCurrencyByCode(state.toCurrency),
                     isInput: false,
-                    onCurrencyTap: () => _showCurrencyPicker(isFromCurrency: false),
+                    onCurrencyTap: () =>
+                        _showCurrencyPicker(isFromCurrency: false),
                     state: state,
                   ),
 
@@ -1232,14 +1245,14 @@ class _CurrencyConverterCardState extends State<_CurrencyConverterCard>
             ],
           ),
           const SizedBox(height: 16),
-          
-          if (isInput) 
+          if (isInput)
             BounceWrapper(
               shouldBounce: _hasInvalidInput,
               onBounceComplete: () => setState(() => _hasInvalidInput = false),
               child: TextFormField(
                 controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: _hasInvalidInput ? theme.colorScheme.error : null,
@@ -1292,17 +1305,19 @@ class _CurrencyConverterCardState extends State<_CurrencyConverterCard>
       width: double.infinity,
       height: 56,
       child: ElevatedButton.icon(
-        onPressed: isLoading ? null : () {
-          if (state.amount > 0) {
-            context.read<CurrencyConversionBloc>().add(
-              ConvertCurrencyEvent(
-                fromCurrency: state.fromCurrency,
-                toCurrency: state.toCurrency,
-                amount: state.amount,
-              ),
-            );
-          }
-        },
+        onPressed: isLoading
+            ? null
+            : () {
+                if (state.amount > 0) {
+                  context.read<CurrencyConversionBloc>().add(
+                        ConvertCurrencyEvent(
+                          fromCurrency: state.fromCurrency,
+                          toCurrency: state.toCurrency,
+                          amount: state.amount,
+                        ),
+                      );
+                }
+              },
         icon: isLoading
             ? SizedBox(
                 width: 20,
@@ -1329,7 +1344,7 @@ class _CurrencyConverterCardState extends State<_CurrencyConverterCard>
   Widget _buildResultCard(CurrencyConversionState state) {
     final theme = Theme.of(context);
     final result = state.result!;
-    
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -1368,7 +1383,6 @@ class _CurrencyConverterCardState extends State<_CurrencyConverterCard>
             ],
           ),
           const SizedBox(height: 16),
-          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -1387,9 +1401,7 @@ class _CurrencyConverterCardState extends State<_CurrencyConverterCard>
               ),
             ],
           ),
-          
           const SizedBox(height: 8),
-          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
