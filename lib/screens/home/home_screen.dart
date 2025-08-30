@@ -656,7 +656,12 @@
 // lib/screens/home_screen.dart
 import 'package:currency_converter/bloc/app_bloc.dart';
 import 'package:currency_converter/bloc/app_event.dart';
+import 'package:currency_converter/bloc/currencyconverter/currency_converter_bloc.dart';
+import 'package:currency_converter/bloc/currencyconverter/currency_converter_event.dart';
+import 'package:currency_converter/bloc/currencyconverter/currency_converter_state.dart';
+import 'package:currency_converter/data/currency_data.dart';
 import 'package:currency_converter/user.dart';
+import 'package:currency_converter/widgets/currency_picker_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
