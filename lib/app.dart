@@ -1,32 +1,43 @@
+
+import 'package:currency_converter/presentation/screens/auth/login_screen.dart';
+import 'package:currency_converter/presentation/screens/home/home_screen.dart';
+import 'package:currency_converter/presentation/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/app_bloc.dart';
 import 'bloc/app_state.dart';
-import 'screens/splash_screen.dart';
-import 'screens/login_screen.dart';
-import 'screens/home/home_screen.dart';
 
-/// Main application widget
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  bool _showSplash = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Hide splash after a minimum duration
+    Future.delayed(const Duration(milliseconds: 3000), () {
+      if (mounted) {
+        setState(() {
+          _showSplash = false;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Currency Converter',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
-          brightness: Brightness.light,
-        ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          },
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
@@ -34,26 +45,23 @@ class App extends StatelessWidget {
           seedColor: Colors.deepPurple,
           brightness: Brightness.dark,
         ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          },
-        ),
       ),
-      themeMode: ThemeMode.system,
-      home: BlocBuilder<AppBloc, AppState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case AppStatus.unknown:
-              return const SplashScreen();
-            case AppStatus.authenticated:
-              return const HomeScreen();
-            case AppStatus.unauthenticated:
-              return const LoginScreen();
-          }
-        },
-      ),
+      home: _showSplash
+          ? const SplashScreen()
+          : BlocBuilder<AppBloc, AppState>(
+              builder: (context, state) {
+                switch (state.status) {
+                  case AppStatus.authenticated:
+                    return const HomeScreen();
+                  case AppStatus.unauthenticated:
+                    return const LoginScreen();
+                  case AppStatus.unknown:
+                  default:
+                    return const SplashScreen();
+                }
+              },
+            ),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

@@ -2,8 +2,8 @@ import 'package:currency_converter/bloc/app_bloc.dart';
 import 'package:currency_converter/bloc/app_event.dart';
 import 'package:currency_converter/bloc/currencyconverter/currency_converter_bloc.dart';
 import 'package:currency_converter/bloc/currencyconverter/currency_converter_state.dart';
-import 'package:currency_converter/screens/home/widgets/currency_converter_card.dart';
-import 'package:currency_converter/user.dart';
+import 'package:currency_converter/presentation/screens/home/widgets/currency_converter_card.dart';
+import 'package:currency_converter/model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -97,7 +97,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == 'logout') {
-                context.read<AppBloc>().add(const AppLogoutRequested());
+                // context.read<AppBloc>().add(const AppLogoutRequested());
+                _showLogoutConfirmationDialog(context);
               }
             },
             itemBuilder: (context) => [
@@ -276,4 +277,178 @@ class _WelcomeCard extends StatelessWidget {
       ),
     );
   }
+}
+
+// Enhanced version with Material 3 styling and animations
+void _showLogoutConfirmationDialog(BuildContext context) {
+  final theme = Theme.of(context);
+
+  showDialog<void>(
+    context: context,
+    barrierDismissible: true, // Allow tap outside to dismiss
+    builder: (BuildContext dialogContext) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        elevation: 8,
+        backgroundColor: theme.colorScheme.surface,
+        surfaceTintColor: theme.colorScheme.surfaceTint,
+
+        // Icon at the top
+        icon: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.errorContainer.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(50),
+          ),
+          child: Icon(
+            Icons.logout_rounded,
+            color: theme.colorScheme.error,
+            size: 32,
+          ),
+        ),
+
+        title: Text(
+          'Logout Confirmation',
+          textAlign: TextAlign.center,
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Are you sure you want to logout from your account?',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'You will need to sign in again to access your account.',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
+              ),
+            ),
+          ],
+        ),
+
+        actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        actions: <Widget>[
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop(); // Close dialog
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: theme.colorScheme.outline),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: FilledButton(
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop(); // Close dialog first
+
+                    // Then perform logout with a slight delay for smooth UX
+                    Future.delayed(const Duration(milliseconds: 200), () {
+                      context.read<AppBloc>().add(const AppLogoutRequested());
+
+                      // Show logout success message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(Icons.check_circle_outline,
+                                  color: Colors.white),
+                              SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  'Logged out successfully',
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ],
+                          ),
+                          backgroundColor: theme.colorScheme.primary,
+                          behavior: SnackBarBehavior.floating,
+                          duration: const Duration(seconds: 3),
+                          margin: const EdgeInsets.all(16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      );
+                    });
+                  },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: theme.colorScheme.error,
+                    foregroundColor: theme.colorScheme.onError,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  child: const Text(
+                    'Logout',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
+
+// Alternative: If you want a simple confirmation with just Yes/No
+void _showSimpleLogoutDialog(BuildContext context) {
+  final theme = Theme.of(context);
+
+  showDialog<void>(
+    context: context,
+    builder: (BuildContext dialogContext) {
+      return AlertDialog(
+        title: const Text('Confirm Logout'),
+        content: const Text('Do you want to logout?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              context.read<AppBloc>().add(const AppLogoutRequested());
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: theme.colorScheme.error,
+            ),
+            child: const Text('Yes'),
+          ),
+        ],
+      );
+    },
+  );
 }

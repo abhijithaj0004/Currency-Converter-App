@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'user.dart';
+import '../model/user.dart';
 
 /// Exception thrown when login fails.
 class LogInWithEmailAndPasswordFailure implements Exception {

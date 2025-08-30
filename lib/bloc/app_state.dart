@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../user.dart';
+import '../model/user.dart';
 
 /// Represents the authentication status of the application
 enum AppStatus {

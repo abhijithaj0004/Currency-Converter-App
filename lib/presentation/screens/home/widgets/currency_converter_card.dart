@@ -3,10 +3,10 @@ import 'package:currency_converter/bloc/currencyconverter/currency_converter_eve
 import 'package:currency_converter/bloc/currencyconverter/currency_converter_state.dart';
 import 'package:currency_converter/data/currency_data.dart';
 import 'package:currency_converter/model/currency.dart';
-import 'package:currency_converter/screens/home/widgets/animated_counter.dart';
-import 'package:currency_converter/screens/home/widgets/bouncer_wrapper.dart';
-import 'package:currency_converter/screens/home/widgets/currency_chip.dart';
-import 'package:currency_converter/screens/home/widgets/currency_picker_model.dart';
+import 'package:currency_converter/presentation/screens/home/widgets/animated_counter.dart';
+import 'package:currency_converter/presentation/screens/home/widgets/bouncer_wrapper.dart';
+import 'package:currency_converter/presentation/screens/home/widgets/currency_chip.dart';
+import 'package:currency_converter/presentation/screens/home/widgets/currency_picker_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

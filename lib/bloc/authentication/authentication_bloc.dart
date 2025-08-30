@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import '../../authentication_repository.dart';
+import '../../services/authentication_repository.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
 
