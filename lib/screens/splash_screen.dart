@@ -1,4 +1,11 @@
+import 'dart:developer';
+
+import 'package:currency_converter/bloc/app_bloc.dart';
+import 'package:currency_converter/bloc/app_state.dart';
+import 'package:currency_converter/screens/home/home_screen.dart';
+import 'package:currency_converter/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Splash screen with animated logo and brand transition
 class SplashScreen extends StatefulWidget {
@@ -19,19 +26,19 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    
+
     // Logo animation controller
     _logoController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
+
     // Text animation controller
     _textController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-    
+
     // Logo scale animation
     _logoAnimation = Tween<double>(
       begin: 0.0,
@@ -40,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen>
       parent: _logoController,
       curve: Curves.elasticOut,
     ));
-    
+
     // Text fade animation
     _textAnimation = Tween<double>(
       begin: 0.0,
@@ -49,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen>
       parent: _textController,
       curve: Curves.easeInOut,
     ));
-    
+
     // Slide animation for text
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.5),
@@ -58,15 +65,27 @@ class _SplashScreenState extends State<SplashScreen>
       parent: _textController,
       curve: Curves.easeOutCubic,
     ));
-    
+
     // Start animations
     _startAnimations();
+    checkUserLogin();
   }
-  
+
   void _startAnimations() async {
     await _logoController.forward();
     await Future.delayed(const Duration(milliseconds: 300));
     await _textController.forward();
+  }
+
+  void checkUserLogin() async {
+    // Simulate a network call
+    await Future.delayed(const Duration(seconds: 2));
+    // Navigate to home screen
+    log('Delayed for 2 seconds');
+    
+    // Navigator.of(context).pushReplacement(
+    //   MaterialPageRoute(builder: (context) => const HomeScreen()),
+    // );
   }
 
   @override
@@ -79,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       backgroundColor: theme.colorScheme.primary,
       body: Center(
@@ -115,9 +134,9 @@ class _SplashScreenState extends State<SplashScreen>
                 );
               },
             ),
-            
+
             const SizedBox(height: 40),
-            
+
             // Animated Text
             SlideTransition(
               position: _slideAnimation,
@@ -143,9 +162,9 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 60),
-            
+
             // Loading indicator
             FadeTransition(
               opacity: _textAnimation,

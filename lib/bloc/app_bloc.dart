@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'package:currency_converter/bloc/app_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'authentication_repository.dart';
-import 'app_event.dart';
+import '../authentication_repository.dart';
 import 'app_state.dart';
-import 'user.dart';
+import '../user.dart';
 
 /// BLoC that manages the global application state
 class AppBloc extends Bloc<AppEvent, AppState> {

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import '../authentication_repository.dart';
+import '../../authentication_repository.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
 
@@ -61,6 +61,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         password: state.password.value,
       );
       emit(state.copyWith(status: FormzSubmissionStatus.success));
+      
     } on LogInWithEmailAndPasswordFailure catch (e) {
       emit(
         state.copyWith(

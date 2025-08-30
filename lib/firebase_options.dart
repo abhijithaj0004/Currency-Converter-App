@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'currency-converter-app-flutter.firebasestorage.app',
     measurementId: 'G-SS69ESGHE0',
   );
+
 }

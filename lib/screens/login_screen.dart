@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import '../authentication_repository.dart';
-import '../authentication/authentication_bloc.dart';
-import '../authentication/authentication_event.dart';
-import '../authentication/authentication_state.dart';
+import '../bloc/authentication/authentication_bloc.dart';
+import '../bloc/authentication/authentication_event.dart';
+import '../bloc/authentication/authentication_state.dart';
 
 /// Login/Register screen with validation and animations
 class LoginScreen extends StatelessWidget {
@@ -359,6 +359,7 @@ class _SubmitButton extends StatelessWidget {
                       context
                           .read<AuthenticationBloc>()
                           .add(const AuthenticationLoginSubmitted());
+                          
                     } else {
                       context
                           .read<AuthenticationBloc>()
