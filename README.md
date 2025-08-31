@@ -2,6 +2,10 @@
 
 A beautiful, responsive, and delightfully animated currency converter mobile app built with Flutter.
 
+## Demo Video
+
+[![Demo Video](https://youtube.com/shorts/7UjCWSgZqYg?feature=share)]
+
 ## Architecture
 
 This project follows the **BLoC (Business Logic Component)** architecture pattern to separate presentation from business logic, making the app scalable, testable, and maintainable.
