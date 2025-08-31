@@ -4,6 +4,7 @@ import 'package:currency_converter/bloc/currencyconverter/currency_converter_blo
 import 'package:currency_converter/bloc/currencyconverter/currency_converter_state.dart';
 import 'package:currency_converter/presentation/screens/home/widgets/currency_converter_card.dart';
 import 'package:currency_converter/model/user.dart';
+import 'package:currency_converter/presentation/screens/trendscreen/trend_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -88,12 +89,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         backgroundColor: theme.colorScheme.surface,
         foregroundColor: theme.colorScheme.onSurface,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.brightness_6),
-            onPressed: () {
-              // Theme toggle would be implemented here
-            },
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.brightness_6),
+          //   onPressed: () {
+          //     // Theme toggle would be implemented here
+          //   },
+          // ),
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == 'logout') {
@@ -163,33 +164,97 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
       ),
-      floatingActionButton: ScaleTransition(
-        scale: _fabAnimation,
-        child: BlocBuilder<CurrencyConversionBloc, CurrencyConversionState>(
-          builder: (context, state) {
-            return FloatingActionButton.extended(
-              onPressed: state.result != null
-                  ? () {
-                      // Add conversion to favorites or history
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Saved: ${state.amount} ${state.fromCurrency} = ${state.result!.convertedAmount.toStringAsFixed(2)} ${state.toCurrency}',
-                          ),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    }
-                  : null,
-              icon: const Icon(Icons.favorite),
-              label: const Text('Save'),
-              backgroundColor: state.result != null
-                  ? null
-                  : Theme.of(context).colorScheme.outline.withOpacity(0.3),
-            );
-          },
-        ),
+      floatingActionButton:
+          BlocBuilder<CurrencyConversionBloc, CurrencyConversionState>(
+        builder: (context, state) {
+          return Stack(
+            children: [
+              // Your existing main FAB
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: ScaleTransition(
+                  scale: _fabAnimation,
+                  child: FloatingActionButton.extended(
+                    onPressed: state.result != null
+                        ? () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Saved: ${state.amount} ${state.fromCurrency} = ${state.result!.convertedAmount.toStringAsFixed(2)} ${state.toCurrency}',
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          }
+                        : null,
+                    icon: const Icon(Icons.favorite),
+                    label: const Text('Save'),
+                    backgroundColor: state.result != null
+                        ? null
+                        : Theme.of(context)
+                            .colorScheme
+                            .outline
+                            .withOpacity(0.3),
+                  ),
+                ),
+              ),
+
+              // Trend FAB (shows only when there's a result)
+              if (state.result != null)
+                Positioned(
+                  bottom: 0,
+                  right: 140, // Adjust position as needed
+                  child: ScaleTransition(
+                    scale: _fabAnimation,
+                    child: FloatingActionButton(
+                      heroTag: "trend_fab",
+                      onPressed: () {
+                        showTrendBottomSheet(
+                          context,
+                          fromCurrency: state.fromCurrency,
+                          toCurrency: state.toCurrency,
+                        );
+                      },
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      foregroundColor:
+                          Theme.of(context).colorScheme.onSecondary,
+                      child: const Icon(Icons.trending_up),
+                      tooltip: 'View 5-day trend',
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
+      // floatingActionButton: ScaleTransition(
+      //   scale: _fabAnimation,
+      //   child: BlocBuilder<CurrencyConversionBloc, CurrencyConversionState>(
+      //     builder: (context, state) {
+      //       return FloatingActionButton.extended(
+      //         onPressed: state.result != null
+      //             ? () {
+      //                 // Add conversion to favorites or history
+      //                 ScaffoldMessenger.of(context).showSnackBar(
+      //                   SnackBar(
+      //                     content: Text(
+      //                       'Saved: ${state.amount} ${state.fromCurrency} = ${state.result!.convertedAmount.toStringAsFixed(2)} ${state.toCurrency}',
+      //                     ),
+      //                     behavior: SnackBarBehavior.floating,
+      //                   ),
+      //                 );
+      //               }
+      //             : null,
+      //         icon: const Icon(Icons.favorite),
+      //         label: const Text('Save'),
+      //         backgroundColor: state.result != null
+      //             ? null
+      //             : Theme.of(context).colorScheme.outline.withOpacity(0.3),
+      //       );
+      //     },
+      //   ),
+      // ),
     );
   }
 }
