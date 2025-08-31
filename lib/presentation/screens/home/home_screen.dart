@@ -164,99 +164,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
       ),
-      floatingActionButton:
-          BlocBuilder<CurrencyConversionBloc, CurrencyConversionState>(
-        builder: (context, state) {
-          return Stack(
-            children: [
-              // Your existing main FAB
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: ScaleTransition(
-                  scale: _fabAnimation,
-                  child: FloatingActionButton.extended(
-                    onPressed: state.result != null
-                        ? () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Saved: ${state.amount} ${state.fromCurrency} = ${state.result!.convertedAmount.toStringAsFixed(2)} ${state.toCurrency}',
-                                ),
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
-                          }
-                        : null,
-                    icon: const Icon(Icons.favorite),
-                    label: const Text('Save'),
-                    backgroundColor: state.result != null
-                        ? null
-                        : Theme.of(context)
-                            .colorScheme
-                            .outline
-                            .withOpacity(0.3),
-                  ),
-                ),
-              ),
-
-              // Trend FAB (shows only when there's a result)
-              if (state.result != null)
-                Positioned(
-                  bottom: 0,
-                  right: 140, // Adjust position as needed
-                  child: ScaleTransition(
-                    scale: _fabAnimation,
-                    child: FloatingActionButton(
-                      heroTag: "trend_fab",
-                      onPressed: () {
-                        showTrendBottomSheet(
-                          context,
-                          fromCurrency: state.fromCurrency,
-                          toCurrency: state.toCurrency,
-                        );
-                      },
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                      foregroundColor:
-                          Theme.of(context).colorScheme.onSecondary,
-                      child: const Icon(Icons.trending_up),
-                      tooltip: 'View 5-day trend',
-                    ),
-                  ),
-                ),
-            ],
-          );
-        },
+      floatingActionButton: ScaleTransition(
+        scale: _fabAnimation,
+        child: BlocBuilder<CurrencyConversionBloc, CurrencyConversionState>(
+          builder: (context, state) {
+            // return if (state.result != null)
+            return FloatingActionButton.extended(
+              heroTag: "trend_fab",
+              onPressed: () {
+                showTrendBottomSheet(
+                  context,
+                  fromCurrency: state.fromCurrency,
+                  toCurrency: state.toCurrency,
+                );
+              },
+              backgroundColor: state.result != null
+                  ? null
+                  : Theme.of(context).colorScheme.outline.withOpacity(0.3),
+              // foregroundColor: Theme.of(context).colorScheme.onSecondary,
+              icon: const Icon(Icons.trending_up),
+              label: const Text('View 5-day trend'),
+            );
+          },
+        ),
       ),
-      // floatingActionButton: ScaleTransition(
-      //   scale: _fabAnimation,
-      //   child: BlocBuilder<CurrencyConversionBloc, CurrencyConversionState>(
-      //     builder: (context, state) {
-      //       return FloatingActionButton.extended(
-      //         onPressed: state.result != null
-      //             ? () {
-      //                 // Add conversion to favorites or history
-      //                 ScaffoldMessenger.of(context).showSnackBar(
-      //                   SnackBar(
-      //                     content: Text(
-      //                       'Saved: ${state.amount} ${state.fromCurrency} = ${state.result!.convertedAmount.toStringAsFixed(2)} ${state.toCurrency}',
-      //                     ),
-      //                     behavior: SnackBarBehavior.floating,
-      //                   ),
-      //                 );
-      //               }
-      //             : null,
-      //         icon: const Icon(Icons.favorite),
-      //         label: const Text('Save'),
-      //         backgroundColor: state.result != null
-      //             ? null
-      //             : Theme.of(context).colorScheme.outline.withOpacity(0.3),
-      //       );
-      //     },
-      //   ),
-      // ),
+   
     );
   }
+
 }
 
 /// Welcome card widget
