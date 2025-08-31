@@ -4,7 +4,7 @@ A beautiful, responsive, and delightfully animated currency converter mobile app
 
 ## Demo Video
 
-[Demo Video](https://youtube.com/shorts/7UjCWSgZqYg?feature=share)
+[Demo Video](assets/currencyconverter.mp4)
 
 
 ## 📦 Download APK
